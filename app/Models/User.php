@@ -70,4 +70,20 @@ class User extends Authenticatable
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
+
+    /**
+     * Check if user is an admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if user is a client
+     */
+    public function isClient(): bool
+    {
+        return $this->role === 'client';
+    }
 }
