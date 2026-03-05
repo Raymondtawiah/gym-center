@@ -25,8 +25,15 @@
                             <a href="{{ route('client.register') }}" class="text-zinc-300 hover:text-white transition-colors">Join Now</a>
                         </nav>
                         
+                        <!-- Mobile Menu Button -->
+                        <button id="mobile-menu-btn" class="md:hidden p-2 text-zinc-300 hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                        
                         <!-- Auth Buttons -->
-                        <div class="flex items-center gap-3">
+                        <div class="hidden md:flex items-center gap-3">
                             @auth
                                 <a href="{{ route('dashboard') }}" class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white font-medium rounded-lg transition-colors">
                                     Dashboard
@@ -41,6 +48,21 @@
                     </div>
                 </div>
             </header>
+
+            <!-- Mobile Navigation Menu -->
+            <div id="mobile-menu" class="hidden md:hidden bg-zinc-900 border-b border-zinc-800">
+                <div class="px-4 py-4 space-y-3">
+                    <a href="{{ route('home') }}" class="block text-zinc-300 hover:text-white transition-colors">Home</a>
+                    <a href="{{ route('classes') }}" class="block text-green-400 font-medium">Classes</a>
+                    <a href="{{ route('client.register') }}" class="block text-zinc-300 hover:text-white transition-colors">Join Now</a>
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="block px-4 py-2 bg-green-600 text-white font-medium rounded-lg text-center">Dashboard</a>
+                    @else
+                        <a href="{{ route('login') }}" class="block text-zinc-300 hover:text-white transition-colors">Log in</a>
+                        <a href="{{ route('client.register') }}" class="block px-4 py-2 bg-green-600 text-white font-medium rounded-lg text-center">Join Now</a>
+                    @endauth
+                </div>
+            </div>
 
             <!-- Main Content -->
             <main class="py-12">
@@ -175,5 +197,15 @@
     </body>
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
     </script>
 </html>

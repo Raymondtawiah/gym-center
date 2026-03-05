@@ -18,6 +18,14 @@
                 </a>
 
                 <div class="flex flex-col gap-6">
+                    <!-- Back Link -->
+                    <a href="{{ route('home') }}" class="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Back to Home
+                    </a>
+                    
                     <div class="rounded-xl border bg-white dark:bg-stone-950 dark:border-stone-800 text-stone-800 shadow-xs">
                         <div class="px-10 py-8">
                             <div class="flex flex-col gap-6">

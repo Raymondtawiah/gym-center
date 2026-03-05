@@ -25,7 +25,7 @@
         </div>
         
         <!-- Navigation -->
-        <header class="fixed top-0 left-0 right-0 w-full p-6 z-50">
+        <header class="fixed top-0 left-0 right-0 w-full p-4 md:p-6 z-50">
             <div class="max-w-7xl mx-auto flex items-center justify-between">
                 <!-- Logo -->
                 <div class="flex items-center gap-2">
@@ -35,8 +35,15 @@
                     <span class="text-xl font-bold text-white">GymCenter</span>
                 </div>
                 
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 text-white hover:text-green-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                
                 @if (Route::has('login'))
-                    <nav class="flex items-center gap-4">
+                    <nav class="hidden md:flex items-center gap-4">
                         <a href="{{ route('classes') }}" class="px-5 py-2 text-white hover:text-green-400 font-medium transition-colors">Classes</a>
                         @auth
                             <a
@@ -66,6 +73,21 @@
                 @endif
             </div>
         </header>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden fixed top-20 left-0 right-0 bg-zinc-900/95 backdrop-blur-sm z-40 p-4 md:hidden">
+            <div class="flex flex-col gap-4">
+                <a href="{{ route('classes') }}" class="px-5 py-3 text-white hover:text-green-400 font-medium transition-colors text-center">Classes</a>
+                @auth
+                    <a href="{{ route('dashboard') }}" class="px-5 py-3 bg-green-600 hover:bg-green-500 text-white font-medium rounded-lg transition-colors text-center">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="px-5 py-3 text-white hover:text-green-400 font-medium transition-colors text-center">Log in</a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="px-5 py-3 bg-green-600 hover:bg-green-500 text-white font-medium rounded-lg transition-colors text-center">Register</a>
+                    @endif
+                @endauth
+            </div>
+        </div>
 
         <!-- Main Content -->
         <div class="relative z-10 pt-24">
@@ -207,5 +229,15 @@
     </body>
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
     </script>
 </html>
