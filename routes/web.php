@@ -8,6 +8,8 @@ Route::view('/', 'welcome')->name('home');
 
 Route::view('/terms', 'pages.terms')->name('terms');
 
+Route::view('/privacy', 'pages.privacy')->name('privacy');
+
 Route::view('/client-register', 'pages.client-register')->name('client.register');
 Route::post('/client-register', [ClientRegisterController::class, 'store'])->name('client.register.store');
 

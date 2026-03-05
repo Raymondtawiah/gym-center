@@ -179,7 +179,7 @@
                                             class="mt-1 w-4 h-4 text-green-600 border-zinc-300 rounded focus:ring-green-500"
                                         >
                                         <label for="terms" class="text-sm text-zinc-600 dark:text-zinc-400">
-                                            I agree to the <a href="{{ route('terms') }}" class="text-green-600 hover:underline">Terms and Conditions</a> and <a href="#" class="text-green-600 hover:underline">Privacy Policy</a>
+                                            I agree to the <a href="{{ route('terms') }}" class="text-green-600 hover:underline">Terms and Conditions</a> and <a href="{{ route('privacy') }}" class="text-green-600 hover:underline">Privacy Policy</a>
                                         </label>
                                     </div>
 
