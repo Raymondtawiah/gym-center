@@ -3,18 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ClientRegisterRequest;
-use App\Http\Resources\ClientResource;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use App\Models\User;
 
 class ClientRegisterController extends Controller
 {
     public function store(ClientRegisterRequest $request)
     {
-        // Check if this is the first user - first user becomes admin
-        $isFirstUser = User::count() === 0;
-        $role = $isFirstUser ? 'admin' : 'client';
+        // Get the authenticated user's gym (for admin/staff registering clients)
+        $gymId = null;
+        
+        if (auth()->check()) {
+            $user = auth()->user();
+            // Only admins and staff can register clients to a gym
+            if ($user->isAdmin() || $user->isStaff()) {
+                $gymId = $user->gym_id;
+            }
+        }
+
+        // If no gym_id from auth, check if there's a gym to assign to
+        if (!$gymId) {
+            // Get the first gym (for demo purposes - in production, clients would select a gym)
+            $gym = \App\Models\Gym::first();
+            if ($gym) {
+                $gymId = $gym->id;
+            }
+        }
+
+        // Create the user (don't log in automatically)
+        // Admins register clients - role is always 'client'
+        $role = 'client';
 
         $user = User::create([
             'name' => $request->first_name . ' ' . $request->last_name,
@@ -29,15 +48,14 @@ class ClientRegisterController extends Controller
             'emergency_contact_phone' => $request->emergency_contact_phone,
             'membership_type' => $request->membership_type,
             'role' => $role,
+            'is_approved' => true, // All clients registered by admin are auto-approved
+            'gym_id' => $gymId,
         ]);
 
-        Auth::login($user);
-
-        // Different welcome message for admin vs client
-        if ($isFirstUser) {
-            return redirect()->route('dashboard')->with('success', 'Welcome, Admin! You are the first user and have been granted admin privileges.');
-        }
-
-        return redirect()->route('dashboard')->with('success', 'Welcome to GymCenter! Your account has been created successfully.');
+        // Redirect back to admin users page with success toast message
+        return redirect()->route('admin.users.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Client registered successfully!'
+        ]);
     }
 }

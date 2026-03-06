@@ -2,9 +2,13 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         @include('partials.head')
+        @php use Illuminate\Support\Facades\Session; @endphp
         <title>Client Registration - GymCenter</title>
     </head>
-    <body class="min-h-screen bg-neutral-100 antialiased dark:bg-linear-to-b dark:from-neutral-950 dark:to-neutral-900">
+    <body class="min-h-screen bg-neutral-100 antialiased dark:bg-gradient-to-b dark:from-neutral-950 dark:to-neutral-900">
+        <!-- Toast Notifications -->
+        @include('components.toast')
+        
         <div class="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
             <div class="flex w-full max-w-2xl flex-col gap-6">
                 <!-- Logo -->
@@ -189,11 +193,6 @@
                                         </flux:button>
                                     </div>
                                 </form>
-
-                                <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
-                                    <span>{{ __('Already have an account?') }}</span>
-                                    <flux:link :href="route('login')" wire:navigate>{{ __('Log in') }}</flux:link>
-                                </div>
                             </div>
                         </div>
                     </div>

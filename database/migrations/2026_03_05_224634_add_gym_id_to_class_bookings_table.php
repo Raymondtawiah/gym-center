@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('role', ['client', 'admin'])->default('client')->after('email');
+        Schema::table('class_bookings', function (Blueprint $table) {
+            $table->foreignId('gym_id')->nullable()->constrained('gyms')->onDelete('cascade');
         });
     }
 
@@ -21,8 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role');
+        Schema::table('class_bookings', function (Blueprint $table) {
+            $table->dropForeign(['gym_id']);
+            $table->dropColumn('gym_id');
         });
     }
 };

@@ -29,6 +29,12 @@
 }
 
 @layer theme {
+    :root {
+        --color-accent: var(--color-neutral-800);
+        --color-accent-content: var(--color-neutral-800);
+        --color-accent-foreground: var(--color-white);
+    }
+
     .dark {
         --color-accent: var(--color-white);
         --color-accent-content: var(--color-white);

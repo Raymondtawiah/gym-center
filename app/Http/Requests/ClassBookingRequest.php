@@ -21,10 +21,17 @@ class ClassBookingRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'gym_class_id' => ['required', 'exists:gym_classes,id'],
             'booking_date' => ['required', 'date', 'after_or_equal:today'],
         ];
+        
+        // Admin can book for other users
+        if (auth()->user()->is_admin ?? false) {
+            $rules['user_id'] = ['nullable', 'exists:users,id'];
+        }
+        
+        return $rules;
     }
 
     /**
@@ -37,6 +44,7 @@ class ClassBookingRequest extends FormRequest
             'gym_class_id.exists' => 'The selected class does not exist',
             'booking_date.required' => 'Please select a date',
             'booking_date.after_or_equal' => 'Booking date must be today or later',
+            'user_id.exists' => 'The selected user does not exist',
         ];
     }
 }

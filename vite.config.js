@@ -13,9 +13,20 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
+        host: '0.0.0.0',
+        port: 5173,
         cors: true,
+        strictPort: false,
+        hmr: {
+            host: 'gymcenter.test',
+        },
         watch: {
             ignored: ['**/storage/framework/views/**'],
+        },
+    },
+    resolve: {
+        alias: {
+            '@': '/resources/js',
         },
     },
 });

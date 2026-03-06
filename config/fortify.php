@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RegisteredUserController;
 use Laravel\Fortify\Features;
 
 return [

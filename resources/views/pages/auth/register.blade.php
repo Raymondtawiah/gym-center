@@ -1,4 +1,7 @@
 <x-layouts::auth :title="__('Register')">
+    <!-- Toast Notifications -->
+    @include('components.toast')
+    
     <div class="flex flex-col gap-6">
         <x-auth-header :title="__('Create an account')" :description="__('Enter your details below to create your account')" />
 
@@ -7,6 +10,7 @@
 
         <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
             @csrf
+            
             <!-- Name -->
             <flux:input
                 name="name"
@@ -17,6 +21,23 @@
                 autofocus
                 autocomplete="name"
                 :placeholder="__('Full name')"
+            />
+
+            <!-- Gym Name -->
+            <flux:input
+                name="gym_name"
+                :label="__('Gym Name')"
+                :value="old('gym_name')"
+                type="text"
+                required
+                :placeholder="__('Your Gym Name')"
+            />
+            <flux:input
+                name="gym_address"
+                :label="__('Gym Address')"
+                :value="old('gym_address')"
+                type="text"
+                :placeholder="__('Gym Address (optional)')"
             />
 
             <!-- Email Address -->

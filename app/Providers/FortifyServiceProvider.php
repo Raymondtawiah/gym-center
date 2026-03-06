@@ -4,12 +4,17 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Http\Controllers\RegisteredUserController;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Fortify\Events\Login;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -18,7 +23,8 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register custom RegisteredUserController
+        $this->app->singleton(\Laravel\Fortify\Contracts\RegisterResponse::class, RegisteredUserController::class);
     }
 
     /**
@@ -26,6 +32,20 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Set redirect path after registration to login page
+        Fortify::redirects('register', '/login');
+        
+        // Use custom registration controller to redirect to login
+        Fortify::registerView(fn () => view('pages::auth.register'));
+        
+        // Listen for Fortify login event to set toast notification
+        $this->app['events']->listen(Login::class, function ($event) {
+            Session::flash('toast', [
+                'type' => 'success',
+                'message' => 'Welcome back, ' . $event->user->name . '!'
+            ]);
+        });
+        
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();

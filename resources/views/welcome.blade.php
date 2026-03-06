@@ -14,6 +14,9 @@
         @vite(['resources/css/app.css'])
     </head>
     <body class="bg-zinc-900 text-white min-h-screen font-sans">
+        <!-- Toast Notifications -->
+        @include('components.toast')
+        
         <!-- Background Image with Overlay -->
         <div class="fixed inset-0 z-0">
             <img 
@@ -44,7 +47,6 @@
                 
                 @if (Route::has('login'))
                     <nav class="hidden md:flex items-center gap-4">
-                        <a href="{{ route('classes') }}" class="px-5 py-2 text-white hover:text-green-400 font-medium transition-colors">Classes</a>
                         @auth
                             <a
                                 href="{{ route('dashboard') }}"
@@ -77,7 +79,6 @@
         <!-- Mobile Navigation Menu -->
         <div id="mobile-menu" class="hidden fixed top-20 left-0 right-0 bg-zinc-900/95 backdrop-blur-sm z-40 p-4 md:hidden">
             <div class="flex flex-col gap-4">
-                <a href="{{ route('classes') }}" class="px-5 py-3 text-white hover:text-green-400 font-medium transition-colors text-center">Classes</a>
                 @auth
                     <a href="{{ route('dashboard') }}" class="px-5 py-3 bg-green-600 hover:bg-green-500 text-white font-medium rounded-lg transition-colors text-center">Dashboard</a>
                 @else
@@ -109,9 +110,6 @@
                         @else
                             <a href="{{ route('client.register') }}" class="px-8 py-3 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg transition-colors">
                                 Start Your Journey
-                            </a>
-                            <a href="{{ route('classes') }}" class="px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold rounded-lg transition-colors">
-                                View Class Schedule
                             </a>
                             <a href="{{ route('login') }}" class="px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold rounded-lg transition-colors">
                                 Log in

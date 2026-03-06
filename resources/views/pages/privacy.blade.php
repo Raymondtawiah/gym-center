@@ -21,7 +21,6 @@
                         <!-- Navigation -->
                         <nav class="hidden md:flex items-center gap-6">
                             <a href="{{ route('home') }}" class="text-zinc-300 hover:text-white transition-colors">Home</a>
-                            <a href="{{ route('classes') }}" class="text-zinc-300 hover:text-white transition-colors">Classes</a>
                             <a href="{{ route('client.register') }}" class="text-zinc-300 hover:text-white transition-colors">Join Now</a>
                         </nav>
                         
