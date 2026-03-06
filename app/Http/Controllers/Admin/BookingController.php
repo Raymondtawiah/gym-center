@@ -235,4 +235,53 @@ class BookingController extends Controller
         
         return view('admin.bookings.print-form', compact('gym'));
     }
+
+    /**
+     * Show the renewal form for a booking.
+     */
+    public function renewForm(ClassBooking $booking)
+    {
+        // Only admin and staff can renew memberships
+        if (!auth()->user()->isAdmin() && !auth()->user()->isStaff()) {
+            abort(403);
+        }
+        
+        $booking->load(['user', 'gym']);
+        
+        return view('admin.bookings.renew', compact('booking'));
+    }
+
+    /**
+     * Process the membership renewal.
+     */
+    public function renew(Request $request, ClassBooking $booking)
+    {
+        // Only admin and staff can renew memberships
+        if (!auth()->user()->isAdmin() && !auth()->user()->isStaff()) {
+            abort(403);
+        }
+        
+        $request->validate([
+            'membership_type' => 'required|in:monthly,yearly',
+            'start_date' => 'required|date',
+        ]);
+        
+        // Calculate end date based on membership type
+        $startDate = \Carbon\Carbon::parse($request->start_date);
+        $endDate = $request->membership_type === 'yearly' 
+            ? $startDate->addYear() 
+            : $startDate->addMonth();
+        
+        // Update the existing booking
+        $booking->update([
+            'membership_type' => $request->membership_type,
+            'start_date' => $request->start_date,
+            'end_date' => $endDate,
+            'status' => 'confirmed',
+            'booking_date' => now(),
+        ]);
+        
+        return redirect()->route('admin.bookings.index')
+            ->with('success', 'Membership renewed successfully!');
+    }
 }

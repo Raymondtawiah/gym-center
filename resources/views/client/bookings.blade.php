@@ -109,7 +109,8 @@
                                     <label for="status" class="block text-sm text-zinc-400 mb-1">Status</label>
                                     <select name="status" id="status" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 sm:px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base">
                                         <option value="">All Statuses</option>
-                                        <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                                        <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Active</option>
+                                        <option value="expired" {{ request('status') == 'expired' ? 'selected' : '' }}>Expired</option>
                                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                                         <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                                     </select>
@@ -154,10 +155,15 @@
                                             <div class="flex flex-wrap items-center justify-between gap-3">
                                                 <div class="flex items-center gap-2 sm:gap-3">
                                                     <span class="px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-full 
-                                                        @if($booking->status === 'confirmed') bg-green-600/20 text-green-400
+                                                        @if($booking->status === 'expired' || $booking->isExpired()) bg-red-600/20 text-red-400
+                                                        @elseif($booking->isExpiringSoon()) bg-yellow-600/20 text-yellow-400
+                                                        @elseif($booking->status === 'confirmed') bg-green-600/20 text-green-400
                                                         @elseif($booking->status === 'pending') bg-yellow-600/20 text-yellow-400
                                                         @else bg-red-600/20 text-red-400 @endif">
-                                                        {{ ucfirst($booking->status) }}
+                                                        @if($booking->isExpired() || $booking->status === 'expired') Expired
+                                                        @elseif($booking->isExpiringSoon()) Expiring Soon
+                                                        @else {{ ucfirst($booking->status) }}
+                                                        @endif
                                                     </span>
                                                     <span class="text-zinc-400 text-xs sm:text-sm">
                                                         {{ $booking->membership_type === 'monthly' ? 'Monthly' : 'Yearly' }} Membership

@@ -52,6 +52,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/admin/bookings/{booking}', [BookingController::class, 'show'])->name('admin.bookings.show');
         Route::patch('/admin/bookings/{booking}/status', [BookingController::class, 'updateStatus'])->name('admin.bookings.update-status');
         
+        // Membership renewal routes - both admin and staff can access
+        Route::get('/admin/bookings/{booking}/renew', [BookingController::class, 'renewForm'])->name('admin.bookings.renew');
+        Route::post('/admin/bookings/{booking}/renew', [BookingController::class, 'renew'])->name('admin.bookings.renew.store');
+        
         // Gym management routes - both admin and staff can access
         Route::get('/admin/gym/settings', [GymController::class, 'settings'])->name('admin.gym.settings');
         Route::patch('/admin/gym/{gym}', [GymController::class, 'update'])->name('admin.gym.update');

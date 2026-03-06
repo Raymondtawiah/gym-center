@@ -235,6 +235,14 @@ d<!DOCTYPE html>
                             @endif
 
                             <!-- Actions -->
+                            @if($booking->membership_type && ($booking->status === 'expired' || $booking->isExpired() || $booking->isExpiringSoon() || $booking->status === 'confirmed'))
+                                <div class="flex flex-wrap gap-3 pt-4 border-t border-white/10">
+                                    <a href="{{ route('admin.bookings.renew', $booking) }}" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-500 text-white font-medium rounded-lg transition-colors">
+                                        Renew Membership
+                                    </a>
+                                </div>
+                            @endif
+                            
                             @if($booking->status === 'confirmed')
                                 <div class="flex flex-wrap gap-3 pt-4 border-t border-white/10">
                                     <form method="POST" action="{{ route('admin.bookings.update-status', $booking) }}" class="inline">
