@@ -3,7 +3,7 @@
     <head>
         @include('partials.head')
         @php use Illuminate\Support\Facades\Session; @endphp
-        <title>Client Registration - GymCenter</title>
+        <title>{{ auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isStaff()) ? 'Register Client' : 'Client Registration' }} - GymCenter</title>
     </head>
     <body class="min-h-screen bg-neutral-100 antialiased dark:bg-gradient-to-b dark:from-neutral-950 dark:to-neutral-900">
         <!-- Toast Notifications -->
@@ -23,19 +23,28 @@
 
                 <div class="flex flex-col gap-6">
                     <!-- Back Link -->
-                    <a href="{{ route('home') }}" class="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                        Back to Home
-                    </a>
+                    @if(auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isStaff()))
+                        <a href="{{ route('admin.users.index') }}" class="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            Back to Admin
+                        </a>
+                    @else
+                        <a href="{{ route('home') }}" class="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            Back to Home
+                        </a>
+                    @endif
                     
                     <div class="rounded-xl border bg-white dark:bg-stone-950 dark:border-stone-800 text-stone-800 shadow-xs">
                         <div class="px-10 py-8">
                             <div class="flex flex-col gap-6">
                                 <x-auth-header 
-                                    :title="__('Join GymCenter')" 
-                                    :description="__('Register as a new gym member to start your fitness journey')" 
+                                    :title="__(auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isStaff()) ? 'Register New Client' : 'Join GymCenter')" 
+                                    :description="__(auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isStaff()) ? 'Add a new member to your gym' : 'Register as a new gym member to start your fitness journey')" 
                                 />
 
                                 <!-- Session Status -->
@@ -189,7 +198,7 @@
 
                                     <div class="flex items-center justify-end">
                                         <flux:button type="submit" variant="primary" class="w-full" data-test="register-client-button">
-                                            {{ __('Register as Member') }}
+                                            {{ __(auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isStaff()) ? 'Register Client' : 'Register as Member') }}
                                         </flux:button>
                                     </div>
                                 </form>

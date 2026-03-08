@@ -53,9 +53,17 @@ class ClientRegisterController extends Controller
         ]);
 
         // Redirect back to admin users page with success toast message
-        return redirect()->route('admin.users.index')->with('toast', [
+        if (auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isStaff())) {
+            return redirect()->route('admin.users.index')->with('toast', [
+                'type' => 'success',
+                'message' => 'Client registered successfully!'
+            ]);
+        }
+        
+        // For public registration, redirect to login with success message
+        return redirect()->route('login')->with('toast', [
             'type' => 'success',
-            'message' => 'Client registered successfully!'
+            'message' => 'Registration successful! Please log in.'
         ]);
     }
 }
