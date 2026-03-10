@@ -37,7 +37,22 @@ class AuthenticatedSessionController extends Controller
                 ])->onlyInput('email');
             }
             
-            // Check if email is verified - if not, send verification email and redirect
+            // Always send verification code for admin and staff
+            if ($user->role === 'admin' || $user->role === 'staff') {
+                // Get gym name
+                $gymName = 'GymCenter';
+                if ($user->gym) {
+                    $gymName = $user->gym->name;
+                }
+                
+                // Send verification email
+                $user->notify(new \App\Notifications\LoginVerificationNotification($gymName));
+                
+                // Redirect to verification page
+                return redirect()->route('login.verify');
+            }
+            
+            // Check if email is verified for clients - if not, send verification email and redirect
             if (!$user->email_verified_at) {
                 // Get gym name
                 $gymName = 'GymCenter';

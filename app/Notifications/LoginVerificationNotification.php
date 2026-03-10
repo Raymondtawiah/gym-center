@@ -45,29 +45,22 @@ class LoginVerificationNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $mail = (new MailMessage)
+        // Log the verification code when using log mail driver
+        \Illuminate\Support\Facades\Log::info('Sending login verification email to: ' . $notifiable->email . ' with code: ' . $this->verificationCode);
+        
+        return (new MailMessage)
             ->subject("Verify your login to {$this->gymName}")
             ->greeting("Welcome to {$this->gymName}!")
             ->line('We noticed a login attempt to your account.')
-            ->line('Use the verification code below to verify your login:');
-        
-        // Add the 6-digit code prominently
-        if ($this->verificationCode) {
-            $mail->line('')
-                ->line('')
-                ->line('')
-                ->subject("Your verification code: {$this->verificationCode}")
-                ->line('')
-                ->line('');
-            
-            // Render the code in a larger format
-            $mail = $mail->view('emails.verification-code', [
-                'code' => $this->verificationCode,
-                'gymName' => $this->gymName
-            ]);
-        }
-        
-        return $mail
+            ->line('Use the verification code below to verify your login:')
+            ->line('')
+            ->line('')
+            ->line('YOUR VERIFICATION CODE:')
+            ->line('')
+            ->line('')
+            ->line("{$this->verificationCode}")
+            ->line('')
+            ->line('')
             ->line('This code will expire in 10 minutes.')
             ->line('If you did not attempt to log in, please secure your account immediately.')
             ->salutation("Best regards,\n{$this->gymName}");

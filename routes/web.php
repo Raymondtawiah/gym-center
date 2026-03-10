@@ -8,12 +8,16 @@ use App\Http\Controllers\Admin\UserApprovalController;
 use App\Http\Controllers\Admin\GymController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Auth\LoginVerificationController;
+use App\Http\Controllers\Auth\CustomLoginController;
 
 Route::view('/', 'welcome')->name('home');
 
 Route::view('/terms', 'pages.terms')->name('terms');
 
 Route::view('/privacy', 'pages.privacy')->name('privacy');
+
+// Custom login route to override Fortify's default for verification flow
+Route::post('/login', [CustomLoginController::class, 'store'])->name('login.store');
 
 // Login verification routes (before auth middleware)
 Route::middleware(['auth'])->group(function () {
@@ -28,6 +32,13 @@ Route::get('/login/verify/{id}/{hash}', [LoginVerificationController::class, 've
 // Custom registration route to redirect to login after registration
 Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.store');
 
+// Admin-only routes (not accessible by staff)
+Route::middleware(['auth', 'verified', 'admin.only'])->group(function () {
+    // Client registration - admin only (not accessible by staff)
+    Route::view('/client-register', 'pages.client-register')->name('client.register');
+    Route::post('/client-register', [ClientRegisterController::class, 'store'])->name('client.register.store');
+});
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
     
@@ -37,10 +48,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     // Admin and Staff routes (both can access these)
     Route::middleware(['admin'])->group(function () {
-        // Client registration - admin only
-        Route::view('/client-register', 'pages.client-register')->name('client.register');
-        Route::post('/client-register', [ClientRegisterController::class, 'store'])->name('client.register.store');
-        
         // Booking management routes - both admin and staff can access (except delete)
         Route::get('/admin/bookings', [BookingController::class, 'index'])->name('admin.bookings.index');
         Route::get('/admin/bookings/create', [BookingController::class, 'create'])->name('admin.bookings.create');
@@ -62,9 +69,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     
     // Admin only routes (user management and booking delete)
-    Route::middleware(['admin'])->group(function () {
+    Route::middleware(['admin.only'])->group(function () {
         // User management routes - admin only
         Route::get('/admin/users', [UserApprovalController::class, 'index'])->name('admin.users.index');
+        Route::get('/admin/users/{user}', [UserApprovalController::class, 'show'])->name('admin.users.show');
         Route::patch('/admin/users/{user}/approve', [UserApprovalController::class, 'approve'])->name('admin.users.approve');
         Route::patch('/admin/users/{user}/disapprove', [UserApprovalController::class, 'disapprove'])->name('admin.users.disapprove');
         Route::delete('/admin/users/{user}', [UserApprovalController::class, 'destroy'])->name('admin.users.destroy');

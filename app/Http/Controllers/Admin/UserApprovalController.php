@@ -26,20 +26,32 @@ class UserApprovalController extends Controller
     }
 
     /**
+     * Display a specific user's details.
+     */
+    public function show(User $user)
+    {
+        $currentUser = auth()->user();
+        $gymId = $currentUser->gym_id;
+
+        // Ensure user belongs to the same gym
+        if ($user->gym_id !== $gymId) {
+            return back()->with('error', 'You can only view users in your gym.');
+        }
+
+        return view('admin.users.show', compact('user'));
+    }
+
+    /**
      * Approve a user.
      */
     public function approve(User $user)
     {
-        $user = auth()->user();
-        $gymId = $user->gym_id;
+        $currentUser = auth()->user();
+        $gymId = $currentUser->gym_id;
 
         // Ensure user belongs to the same gym
         if ($user->gym_id !== $gymId) {
             return back()->with('error', 'You can only manage users in your gym.');
-        }
-
-        if ($user->role !== 'client') {
-            return back()->with('error', 'Only clients can be approved.');
         }
 
         $user->update(['is_approved' => true]);
@@ -58,10 +70,6 @@ class UserApprovalController extends Controller
         // Ensure user belongs to the same gym
         if ($user->gym_id !== $gymId) {
             return back()->with('error', 'You can only manage users in your gym.');
-        }
-
-        if ($user->role !== 'client') {
-            return back()->with('error', 'Only clients can be disapproved.');
         }
 
         $user->update(['is_approved' => false]);
