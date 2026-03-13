@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\GymController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Auth\LoginVerificationController;
 use App\Http\Controllers\Auth\CustomLoginController;
+use App\Http\Controllers\Auth\PreRegistrationController;
 
 Route::view('/', 'welcome')->name('home');
 
@@ -18,6 +19,26 @@ Route::view('/privacy', 'pages.privacy')->name('privacy');
 
 // Custom login route to override Fortify's default for verification flow
 Route::post('/login', [CustomLoginController::class, 'store'])->name('login.store');
+
+// Pre-registration routes (require default login before registration)
+Route::get('/pre-register/login', [PreRegistrationController::class, 'showLogin'])->name('pre-register.login');
+Route::post('/pre-register/login', [PreRegistrationController::class, 'login'])->name('pre-register.login.post');
+Route::get('/pre-register/verify', [PreRegistrationController::class, 'showVerify'])->name('pre-register.verify');
+Route::post('/pre-register/verify', [PreRegistrationController::class, 'verify'])->name('pre-register.verify.code');
+Route::post('/pre-register/verify/resend', [PreRegistrationController::class, 'resend'])->name('pre-register.verify.resend');
+Route::post('/pre-register/logout', [PreRegistrationController::class, 'logout'])->name('pre-register.logout');
+
+// Registration routes - redirect to pre-register login first
+Route::get('/register', function () {
+    // Check if user has completed pre-registration verification
+    if (!session()->get('pre_registration_verified')) {
+        return redirect()->route('pre-register.login')->with('toast', [
+            'type' => 'info',
+            'message' => 'Please complete pre-registration verification first.'
+        ]);
+    }
+    return view('pages.auth.register');
+})->name('register');
 
 // Login verification routes (before auth middleware)
 Route::middleware(['auth'])->group(function () {
