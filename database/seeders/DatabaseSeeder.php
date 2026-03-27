@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         // Run seeders
         $this->call([
+            DefaultUserSeeder::class,
             BookingSeeder::class,
         ]);
     }

@@ -123,20 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Default Login Credentials for Pre-Registration
-    |--------------------------------------------------------------------------
-    |
-    | These credentials are used for the pre-registration verification flow.
-    | Users must log in with these default credentials before they can
-    | access the registration form. A verification code will be sent
-    | to the owner email for authorization.
-    |
-    */
-
-    'default_login_email' => env('DEFAULT_LOGIN_EMAIL', 'admin@gymcenter.com'),
-    'default_login_password' => env('DEFAULT_LOGIN_PASSWORD', 'admin123'),
     'owner_email' => env('OWNER_EMAIL', 'raymondtawiah23@gmail.com'),
 
 ];

@@ -20,6 +20,14 @@ Route::view('/privacy', 'pages.privacy')->name('privacy');
 // Custom login route to override Fortify's default for verification flow
 Route::post('/login', [CustomLoginController::class, 'store'])->name('login.store');
 
+// Logout route
+Route::post('/logout', function () {
+    auth()->logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/');
+})->name('logout');
+
 // Pre-registration routes (require default login before registration)
 Route::get('/pre-register/login', [PreRegistrationController::class, 'showLogin'])->name('pre-register.login');
 Route::post('/pre-register/login', [PreRegistrationController::class, 'login'])->name('pre-register.login.post');

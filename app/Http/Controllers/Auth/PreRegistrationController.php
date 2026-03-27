@@ -26,16 +26,15 @@ class PreRegistrationController extends Controller
      */
     public function login(Request $request): RedirectResponse
     {
-        $defaultEmail = config('app.default_login_email', 'admin@gymcenter.com');
-        $defaultPassword = config('app.default_login_password', 'admin123');
-
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        // Check if the credentials match the default ones
-        if ($credentials['email'] === $defaultEmail && $credentials['password'] === $defaultPassword) {
+        $defaultUser = User::where('email', $credentials['email'])->where('role', 'admin')->first();
+
+        // Check if the credentials match a seeded default admin
+        if ($defaultUser && Hash::check($credentials['password'], $defaultUser->password)) {
             // Store session flag indicating this is a pre-registration login
             $request->session()->put('pre_registration_login', true);
             $request->session()->put('pre_registration_started', now());
@@ -85,7 +84,7 @@ class PreRegistrationController extends Controller
     /**
      * Show the owner verification page.
      */
-    public function showVerify(Request $request): View
+    public function showVerify(Request $request): View|RedirectResponse
     {
         // Check if pre-registration session exists
         if (!$request->session()->get('pre_registration_login')) {
@@ -104,13 +103,14 @@ class PreRegistrationController extends Controller
             'verification_code' => 'required|digits:6',
         ]);
 
-        $sessionCode = $request->session()->get('owner_verification_code');
+        $inputCode = trim((string) $request->input('verification_code'));
+        $sessionCode = (string) $request->session()->get('owner_verification_code');
         $expires = $request->session()->get('owner_verification_expires');
 
         // Check if code exists and hasn't expired
         if (!$sessionCode || !$expires || now()->greaterThan($expires)) {
             $request->session()->forget(['owner_verification_code', 'owner_verification_expires', 'pre_registration_login']);
-            
+
             return redirect()->route('pre-register.login')->with('toast', [
                 'type' => 'error',
                 'message' => 'Verification code has expired. Please try again.'
@@ -118,7 +118,7 @@ class PreRegistrationController extends Controller
         }
 
         // Verify the code
-        if ($request->verification_code !== $sessionCode) {
+        if ($inputCode !== $sessionCode) {
             return back()->with('toast', [
                 'type' => 'error',
                 'message' => 'Invalid verification code. Please try again.'
