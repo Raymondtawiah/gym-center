@@ -33,28 +33,7 @@ class CustomLoginController extends Controller
                 ]);
             }
             
-            // Generate and send verification code to all users
-            $gymName = 'GymCenter';
-            if ($user->gym) {
-                $gymName = $user->gym->name;
-            }
-            
-            // Generate 6-digit code
-            $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-            
-            // Store in session
-            $request->session()->put('verification_code', $code);
-            $request->session()->put('verification_code_expires', now()->addMinutes(10));
-            $request->session()->put('verification_user_id', $user->id);
-            $request->session()->put('require_verification', true);
-            
-            // Log the code
-            \Illuminate\Support\Facades\Log::info('Verification code generated: ' . $code . ' for user: ' . $user->email);
-            
-            // Send notification
-            $user->notify(new \App\Notifications\LoginVerificationNotification($gymName, $code));
-            
-            // Redirect to verification page
+            // Redirect to verification page (code will be generated there)
             return redirect()->route('login.verify');
         }
 

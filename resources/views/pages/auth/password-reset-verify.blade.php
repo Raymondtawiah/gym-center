@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('partials.head')
-        <title>Verify Your Login - {{ config('app.name', 'Laravel') }}</title>
+        <title>Verify Password Reset - {{ config('app.name', 'Laravel') }}</title>
         <style>[x-cloak] { display: none !important; }</style>
     </head>
     <body class="bg-gradient-to-r from-indigo-500 to-purple-600 min-h-screen flex items-center justify-center">
@@ -10,17 +10,17 @@
         @include('components.toast')
 
         <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-lg">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2 text-center">{{ $gymName }}</h2>
-            <p class="text-gray-600 text-center mb-6">Verify Your Login</p>
+            <h2 class="text-3xl font-bold text-gray-800 mb-2 text-center">Verify Password Reset</h2>
+            <p class="text-gray-600 text-center mb-6">Enter the 6-digit code sent to your email</p>
             
             <div class="text-center mb-6">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                 </div>
                 <p class="text-gray-600 text-sm">
-                    We've sent a 6-digit verification code to your email. Enter it below to verify your login.
+                    We've sent a verification code to your email. Enter it below to continue.
                 </p>
             </div>
 
@@ -43,8 +43,11 @@
             @endif
 
             <!-- Verification Code Form -->
-            <form method="POST" action="{{ route('login.verify.code') }}">
+            <form method="POST" action="{{ route('password.reset.verify.code') }}">
                 @csrf
+                
+                <!-- Hidden Email Field -->
+                <input type="hidden" name="email" value="{{ session('password_reset_email') ?? old('email') }}">
                 
                 <div class="mb-6">
                     <label for="verification_code" class="block text-sm font-medium text-gray-700 mb-2 text-center">
@@ -67,12 +70,12 @@
                 </div>
 
                 <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
-                    Verify & Login
+                    Verify Code
                 </button>
             </form>
 
             <!-- Resend Button -->
-            <form method="POST" action="{{ route('login.verify.resend') }}" class="mt-4">
+            <form method="POST" action="{{ route('password.reset.resend') }}" class="mt-4">
                 @csrf
                 <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -82,21 +85,12 @@
                 </button>
             </form>
 
-            <!-- Logout Button -->
-            <form method="POST" action="{{ route('logout') }}" class="mt-4">
-                @csrf
-                <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-gray-500 hover:text-green-600 font-medium rounded-lg transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    Log Out
-                </button>
-            </form>
-
-            <!-- Help Text -->
-            <p class="text-center text-gray-500 text-sm mt-6">
-                Code expires in 10 minutes. Having trouble? Contact your administrator.
-            </p>
+            <!-- Back to Login -->
+            <div class="text-center mt-6">
+                <a href="{{ route('login') }}" class="text-green-600 hover:text-green-600 text-sm font-medium">
+                    Back to Login
+                </a>
+            </div>
         </div>
 
         @fluxScripts

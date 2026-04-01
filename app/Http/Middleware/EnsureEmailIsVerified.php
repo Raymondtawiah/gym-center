@@ -29,7 +29,7 @@ class EnsureEmailIsVerified
         }
         
         // If user is on the verification page already, let them through
-        if ($request->routeIs('login.verify') || $request->routeIs('login.verify.link') || $request->routeIs('login.verify.resend')) {
+        if ($request->routeIs('login.verify') || $request->routeIs('login.verify.link') || $request->routeIs('login.verify.resend') || $request->routeIs('login.verify.code')) {
             return $next($request);
         }
         

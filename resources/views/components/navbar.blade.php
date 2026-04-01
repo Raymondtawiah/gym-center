@@ -24,6 +24,12 @@
                         <a href="{{ route('admin.bookings.index') }}" class="px-3 py-2 text-sm rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all">
                             Bookings
                         </a>
+                        <a href="{{ route('admin.payments.index') }}" class="px-3 py-2 text-sm rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all">
+                            Payments
+                        </a>
+                        <a href="{{ route('admin.performances.index') }}" class="px-3 py-2 text-sm rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all">
+                            Performance
+                        </a>
                         <a href="{{ route('admin.bookings.create') }}" class="px-3 py-2 text-sm rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all">
                             New Booking
                         </a>
@@ -42,6 +48,12 @@
                     @if(Auth::user()->isClient())
                         <a href="{{ route('client.bookings') }}" class="px-3 py-2 text-sm rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all">
                             My Bookings
+                        </a>
+                        <a href="{{ route('client.payments') }}" class="px-3 py-2 text-sm rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all">
+                            My Payments
+                        </a>
+                        <a href="{{ route('client.performances') }}" class="px-3 py-2 text-sm rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all">
+                            My Performance
                         </a>
                     @endif
                 @endauth
@@ -131,6 +143,12 @@
                     <a href="{{ route('admin.bookings.index') }}" class="block px-3 py-2 text-sm rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all">
                         Bookings
                     </a>
+                    <a href="{{ route('admin.payments.index') }}" class="block px-3 py-2 text-sm rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all">
+                        Payments
+                    </a>
+                    <a href="{{ route('admin.performances.index') }}" class="block px-3 py-2 text-sm rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all">
+                        Performance
+                    </a>
                     <a href="{{ route('admin.bookings.create') }}" class="block px-3 py-2 text-sm rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all">
                         New Booking
                     </a>
@@ -149,6 +167,12 @@
                 @if(Auth::user()->isClient())
                     <a href="{{ route('client.bookings') }}" class="block px-3 py-2 text-sm rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all">
                         My Bookings
+                    </a>
+                    <a href="{{ route('client.payments') }}" class="block px-3 py-2 text-sm rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all">
+                        My Payments
+                    </a>
+                    <a href="{{ route('client.performances') }}" class="block px-3 py-2 text-sm rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all">
+                        My Performance
                     </a>
                 @endif
                 <div class="border-t border-zinc-800 pt-2 mt-2">

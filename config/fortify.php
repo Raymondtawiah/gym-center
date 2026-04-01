@@ -146,7 +146,8 @@ return [
     'features' => [
         // Registration is handled by custom routes in web.php (pre-registration flow)
         // Features::registration(),
-        Features::resetPasswords(),
+        // Password reset is handled by custom controller
+        // Features::resetPasswords(),
         Features::emailVerification(),
         Features::twoFactorAuthentication([
             'confirm' => true,

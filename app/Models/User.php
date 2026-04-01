@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -115,7 +116,7 @@ class User extends Authenticatable
         if ($this->isAdmin() || $this->isStaff()) {
             return true;
         }
-        return $this->is_approved === true;
+        return (bool) $this->is_approved;
     }
 
     /**
@@ -132,6 +133,14 @@ class User extends Authenticatable
     public function gym(): BelongsTo
     {
         return $this->belongsTo(Gym::class);
+    }
+
+    /**
+     * Get the performance records for this user.
+     */
+    public function performances(): HasMany
+    {
+        return $this->hasMany(ClientPerformance::class);
     }
 
     /**

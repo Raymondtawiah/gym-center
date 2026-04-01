@@ -284,4 +284,53 @@ class BookingController extends Controller
         return redirect()->route('admin.bookings.index')
             ->with('success', 'Membership renewed successfully!');
     }
+
+    /**
+     * Show the client-facing membership change/renewal form.
+     */
+    public function clientChangeMembershipForm(ClassBooking $booking)
+    {
+        // Ensure the user can only change their own membership
+        if ($booking->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $booking->load(['gym']);
+
+        return view('client.change-membership', compact('booking'));
+    }
+
+    /**
+     * Process the client's membership change/renewal.
+     */
+    public function clientChangeMembership(Request $request, ClassBooking $booking)
+    {
+        // Ensure the user can only change their own membership
+        if ($booking->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'membership_type' => 'required|in:monthly,yearly',
+            'start_date' => 'required|date',
+        ]);
+
+        // Calculate end date based on membership type
+        $startDate = \Carbon\Carbon::parse($request->start_date);
+        $endDate = $request->membership_type === 'yearly'
+            ? $startDate->copy()->addYear()
+            : $startDate->copy()->addMonth();
+
+        // Update the existing booking
+        $booking->update([
+            'membership_type' => $request->membership_type,
+            'start_date' => $request->start_date,
+            'end_date' => $endDate,
+            'status' => 'confirmed',
+            'booking_date' => now(),
+        ]);
+
+        return redirect()->route('client.bookings.show', $booking)
+            ->with('success', 'Membership changed successfully!');
+    }
 }

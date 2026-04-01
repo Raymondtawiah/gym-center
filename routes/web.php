@@ -7,9 +7,12 @@ use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\Admin\UserApprovalController;
 use App\Http\Controllers\Admin\GymController;
 use App\Http\Controllers\Admin\BookingController;
+use App\Http\Controllers\Admin\PerformanceController;
+use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Auth\LoginVerificationController;
 use App\Http\Controllers\Auth\CustomLoginController;
 use App\Http\Controllers\Auth\PreRegistrationController;
+use App\Http\Controllers\Auth\PasswordResetController;
 
 Route::view('/', 'welcome')->name('home');
 
@@ -58,6 +61,16 @@ Route::middleware(['auth'])->group(function () {
 // Login verification with signed URL
 Route::get('/login/verify/{id}/{hash}', [LoginVerificationController::class, 'verify'])->name('login.verify.link')->middleware(['auth', 'signed']);
 
+// Password reset verification routes
+Route::get('/forgot-password', [PasswordResetController::class, 'showRequestForm'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendVerificationCode'])->name('password.email.post');
+Route::post('/password/email', [PasswordResetController::class, 'sendVerificationCode'])->name('password.email');
+Route::get('/password/reset/verify', [PasswordResetController::class, 'showVerificationForm'])->name('password.reset.verify');
+Route::post('/password/reset/verify', [PasswordResetController::class, 'verifyCode'])->name('password.reset.verify.code');
+Route::post('/password/reset/resend', [PasswordResetController::class, 'resendCode'])->name('password.reset.resend');
+Route::get('/password/reset/new', [PasswordResetController::class, 'showNewPasswordForm'])->name('password.reset.new');
+Route::post('/password/reset/new', [PasswordResetController::class, 'setNewPassword'])->name('password.reset.new.submit');
+
 // Custom registration route to redirect to login after registration
 Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.store');
 
@@ -74,6 +87,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Client bookings route - for clients to view their memberships
     Route::get('/my-bookings', [BookingController::class, 'myBookings'])->name('client.bookings');
     Route::get('/my-bookings/{booking}', [BookingController::class, 'showBooking'])->name('client.bookings.show');
+    
+    // Client membership change/renewal
+    Route::get('/my-bookings/{booking}/change', [BookingController::class, 'clientChangeMembershipForm'])->name('client.bookings.change');
+    Route::post('/my-bookings/{booking}/change', [BookingController::class, 'clientChangeMembership'])->name('client.bookings.change.store');
+    
+    // Client performance - view own records
+    Route::get('/my-performance', [PerformanceController::class, 'myPerformances'])->name('client.performances');
+    Route::get('/my-performance/{performance}', [PerformanceController::class, 'showMyPerformance'])->name('client.performances.show');
+    
+    // Client payments - view own records
+    Route::get('/my-payments', [PaymentController::class, 'myPayments'])->name('client.payments');
+    Route::get('/my-payments/{payment}', [PaymentController::class, 'showMyPayment'])->name('client.payments.show');
     
     // Admin and Staff routes (both can access these)
     Route::middleware(['admin'])->group(function () {
@@ -95,6 +120,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Gym management routes - both admin and staff can access
         Route::get('/admin/gym/settings', [GymController::class, 'settings'])->name('admin.gym.settings');
         Route::patch('/admin/gym/{gym}', [GymController::class, 'update'])->name('admin.gym.update');
+        
+        // Performance management routes - both admin and staff can access
+        Route::get('/admin/performances', [PerformanceController::class, 'index'])->name('admin.performances.index');
+        Route::get('/admin/performances/create', [PerformanceController::class, 'create'])->name('admin.performances.create');
+        Route::post('/admin/performances', [PerformanceController::class, 'store'])->name('admin.performances.store');
+        Route::get('/admin/performances/{performance}', [PerformanceController::class, 'show'])->name('admin.performances.show');
+        Route::get('/admin/performances/{performance}/edit', [PerformanceController::class, 'edit'])->name('admin.performances.edit');
+        Route::put('/admin/performances/{performance}', [PerformanceController::class, 'update'])->name('admin.performances.update');
+        Route::get('/admin/clients/{user}/performances', [PerformanceController::class, 'clientHistory'])->name('admin.performances.client-history');
+        
+        // Payment management routes - both admin and staff can access
+        Route::get('/admin/payments', [PaymentController::class, 'index'])->name('admin.payments.index');
+        Route::get('/admin/payments/create', [PaymentController::class, 'create'])->name('admin.payments.create');
+        Route::post('/admin/payments', [PaymentController::class, 'store'])->name('admin.payments.store');
+        Route::get('/admin/payments/{payment}', [PaymentController::class, 'show'])->name('admin.payments.show');
+        Route::get('/admin/payments/{payment}/edit', [PaymentController::class, 'edit'])->name('admin.payments.edit');
+        Route::put('/admin/payments/{payment}', [PaymentController::class, 'update'])->name('admin.payments.update');
+        Route::get('/admin/clients/{user}/payments', [PaymentController::class, 'clientPayments'])->name('admin.payments.client');
     });
     
     // Admin only routes (user management and booking delete)
@@ -113,6 +156,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         
         // Delete booking - admin only
         Route::delete('/admin/bookings/{booking}', [BookingController::class, 'destroy'])->name('admin.bookings.destroy');
+        
+        // Delete performance record - admin only
+        Route::delete('/admin/performances/{performance}', [PerformanceController::class, 'destroy'])->name('admin.performances.destroy');
+        
+        // Delete payment - admin only
+        Route::delete('/admin/payments/{payment}', [PaymentController::class, 'destroy'])->name('admin.payments.destroy');
+        
+        // Delete booking - admin only
+        Route::delete('/admin/bookings/{booking}', [BookingController::class, 'destroy'])->name('admin.bookings.destroy');
+        
+        // Delete performance record - admin only
+        Route::delete('/admin/performances/{performance}', [PerformanceController::class, 'destroy'])->name('admin.performances.destroy');
     });
 });
 
