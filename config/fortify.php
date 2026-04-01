@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\RegisteredUserController;
 use Laravel\Fortify\Features;
 
 return [
@@ -145,7 +144,8 @@ return [
     */
 
     'features' => [
-        Features::registration(),
+        // Registration is handled by custom routes in web.php (pre-registration flow)
+        // Features::registration(),
         Features::resetPasswords(),
         Features::emailVerification(),
         Features::twoFactorAuthentication([
