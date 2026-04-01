@@ -130,14 +130,9 @@ class PaymentController extends Controller
      */
     public function edit(Payment $payment)
     {
-        $payment->load(['user', 'booking']);
+        $payment->load(['user']);
 
-        $bookings = ClassBooking::where('user_id', $payment->user_id)
-            ->where('status', 'confirmed')
-            ->orderBy('booking_date', 'desc')
-            ->get();
-
-        return view('admin.payments.edit', compact('payment', 'bookings'));
+        return view('admin.payments.edit', compact('payment'));
     }
 
     /**
