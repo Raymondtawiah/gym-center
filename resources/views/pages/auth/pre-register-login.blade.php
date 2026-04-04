@@ -41,11 +41,10 @@
                         type="email" 
                         name="email"
                         id="email"
-                        value="admin@gymcenter.com"
                         required
                         autofocus
                         autocomplete="email"
-                        placeholder="Email" 
+                        placeholder="email" 
                         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 {{ $errors->has('email') ? 'border-red-500' : '' }}"
                     />
                     @error('email')
