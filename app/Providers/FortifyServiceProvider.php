@@ -67,7 +67,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::redirects('login', '/dashboard');
         
         // Use custom registration controller to redirect to login
-        Fortify::registerView(fn () => view('pages::auth.register'));
+        Fortify::registerView(fn () => view('auth.register'));
         
         // Listen for Fortify login event to handle post-login verification
         Event::listen(Login::class, function ($event) {
