@@ -119,13 +119,15 @@ class FortifyServiceProvider extends ServiceProvider
      */
     private function configureViews(): void
     {
-        Fortify::loginView(fn () => view('pages::auth.login'));
-        Fortify::verifyEmailView(fn () => view('pages::auth.verify-email'));
-        Fortify::twoFactorChallengeView(fn () => view('pages::auth.two-factor-challenge'));
-        Fortify::confirmPasswordView(fn () => view('pages::auth.confirm-password'));
-        Fortify::registerView(fn () => view('pages::auth.register'));
-        Fortify::resetPasswordView(fn () => view('pages::auth.reset-password'));
-        Fortify::requestPasswordResetLinkView(fn () => view('pages::auth.forgot-password'));
+        $viewsPath = base_path('resources/views/pages');
+        
+        Fortify::loginView(fn () => view($viewsPath . '/auth/login.blade.php'));
+        Fortify::verifyEmailView(fn () => view($viewsPath . '/auth/verify-email.blade.php'));
+        Fortify::twoFactorChallengeView(fn () => view($viewsPath . '/auth/two-factor-challenge.blade.php'));
+        Fortify::confirmPasswordView(fn () => view($viewsPath . '/auth/confirm-password.blade.php'));
+        Fortify::registerView(fn () => view($viewsPath . '/auth/register.blade.php'));
+        Fortify::resetPasswordView(fn () => view($viewsPath . '/auth/reset-password.blade.php'));
+        Fortify::requestPasswordResetLinkView(fn () => view($viewsPath . '/auth/forgot-password.blade.php'));
     }
 
     /**
