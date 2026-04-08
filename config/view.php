@@ -3,7 +3,8 @@
 return [
 
     'paths' => [
-        resource_path('views'),
+        base_path('resources/views'),
+        base_path('resources/views/pages'),
     ],
 
     'compiled' => env(
@@ -12,7 +13,7 @@ return [
     ),
 
     'namespaces' => [
-        'pages' => resource_path('views/pages'),
+        'pages' => base_path('resources/views/pages'),
     ],
 
 ];
